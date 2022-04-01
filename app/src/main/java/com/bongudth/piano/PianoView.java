@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -72,7 +73,7 @@ public class PianoView extends View {
         super.onDraw(canvas);
 
         for (Key k: whites) {
-            canvas.drawRect(k.rect, white);
+            canvas.drawRect(k.rect, k.isDown ? yellow : white);
         }
 
         for (int i=1; i<NUMBER_KEYS; i++) {
@@ -80,7 +81,28 @@ public class PianoView extends View {
         }
         
         for (Key k: blacks) {
-            canvas.drawRect(k.rect, black);
+            canvas.drawRect(k.rect, k.isDown ? yellow : black);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        boolean isDownAction = action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE;
+
+        for  (int touchIndex=0; touchIndex<event.getPointerCount(); touchIndex++) {
+            float x = event.getX(touchIndex);
+            float y = event.getY(touchIndex);
+
+            for (Key k: whites) { // yellow not release after clicking, need fix
+                if (k.rect.contains(x, y)) {
+                    k.isDown = isDownAction;
+                }
+            }
+        }
+
+        invalidate(); // reDraw
+
+        return true;
     }
 }
