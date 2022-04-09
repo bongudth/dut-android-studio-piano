@@ -19,6 +19,7 @@ public class PianoView extends View {
     private Paint black, white, yellow, blackStroke;
     private ArrayList<Key> blacks, whites;
     private int keyWidth, keyHeight;
+    private SoundManager soundManager;
 
     public PianoView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -42,6 +43,9 @@ public class PianoView extends View {
 
         blacks = new ArrayList<Key>();
         whites = new ArrayList<Key>();
+
+        soundManager = SoundManager.getInstance();
+        soundManager.init(context);
     }
 
     @Override
@@ -83,6 +87,92 @@ public class PianoView extends View {
         for (Key k: blacks) {
             canvas.drawRect(k.rect, k.isDown ? yellow : black);
         }
+
+        for (Key k: whites) {
+            if (k.isDown) {
+                switch (k.sound) {
+                    case 1:
+                        soundManager.playSound(R.raw.c3);
+                        break;
+                    case 2:
+                        soundManager.playSound(R.raw.d3);
+                        break;
+                    case 3:
+                        soundManager.playSound(R.raw.e3);
+                        break;
+                    case 4:
+                        soundManager.playSound(R.raw.f3);
+                        break;
+                    case 5:
+                        soundManager.playSound(R.raw.g3);
+                        break;
+                    case 6:
+                        soundManager.playSound(R.raw.a3);
+                        break;
+                    case 7:
+                        soundManager.playSound(R.raw.b3);
+                        break;
+                    case 8:
+                        soundManager.playSound(R.raw.c4);
+                        break;
+                    case 9:
+                        soundManager.playSound(R.raw.d4);
+                        break;
+                    case 10:
+                        soundManager.playSound(R.raw.e4);
+                        break;
+                    case 11:
+                        soundManager.playSound(R.raw.f4);
+                        break;
+                    case 12:
+                        soundManager.playSound(R.raw.g4);
+                        break;
+                    case 13:
+                        soundManager.playSound(R.raw.a4);
+                        break;
+                    case 14:
+                        soundManager.playSound(R.raw.b4);
+                        break;
+                }
+            }
+        }
+
+        for (Key k: blacks) {
+            if (k.isDown) {
+                switch (k.sound) {
+                    case 15:
+                        soundManager.playSound(R.raw.db3);
+                        break;
+                    case 16:
+                        soundManager.playSound(R.raw.eb3);
+                        break;
+                    case 17:
+                        soundManager.playSound(R.raw.gb3);
+                        break;
+                    case 18:
+                        soundManager.playSound(R.raw.ab3);
+                        break;
+                    case 19:
+                        soundManager.playSound(R.raw.bb3);
+                        break;
+                    case 20:
+                        soundManager.playSound(R.raw.db4);
+                        break;
+                    case 21:
+                        soundManager.playSound(R.raw.eb4);
+                        break;
+                    case 22:
+                        soundManager.playSound(R.raw.gb4);
+                        break;
+                    case 23:
+                        soundManager.playSound(R.raw.ab4);
+                        break;
+                    case 24:
+                        soundManager.playSound(R.raw.bb4);
+                        break;
+                }
+            }
+        }
     }
 
     @Override
@@ -94,9 +184,20 @@ public class PianoView extends View {
             float x = event.getX(touchIndex);
             float y = event.getY(touchIndex);
 
-            for (Key k: whites) { // yellow not release after clicking, need fix
+            for (Key k: blacks) {
                 if (k.rect.contains(x, y)) {
                     k.isDown = isDownAction;
+                    x = y = -1;
+                } else {
+                    k.isDown = false;
+                }
+            }
+
+            for (Key k: whites) {
+                if (k.rect.contains(x, y)) {
+                    k.isDown = isDownAction;
+                } else {
+                    k.isDown = false;
                 }
             }
         }
